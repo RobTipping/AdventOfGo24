@@ -10,20 +10,23 @@ var redMax = 12
 var greenMax = 13
 var blueMax = 14
 
-var red = 0
-var green = 0
-var blue = 0
-
-var testString = "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
+var testString = "Game 1: 3 blue, 4 red; 14 red, 2 green, 6 blue; 2 green"
 
 
 func main() {
     fmt.Println("test world")
-    //tempChar:= testString[5]
-    fmt.Println(strings.Split(testString, ":"))
-    fmt.Println(strings.SplitAfter(testString, ":"))
-    firstSplit := strings.Split(testString, ": ")
+    fmt.Println(validGame(testString))
+    //tempChar:= inputString[5]
+}
+
+func validGame(inputString string) int {
+    firstSplit := strings.Split(inputString, ": ")
     fmt.Println(firstSplit[0])
+    gameNumber, err := strconv.Atoi(strings.TrimPrefix(firstSplit[0], "Game "))
+    if err == nil {
+        fmt.Println("there is no game")
+        fmt.Println(gameNumber)
+    }
     secondSplit := strings.Split(firstSplit[1], "; ")
     for _, x := range secondSplit {
         fmt.Println(x)
@@ -33,15 +36,31 @@ func main() {
                 temp := strings.TrimSuffix(y," red")
                 r, err := strconv.Atoi(temp)
                 if err == nil {
-                    red = r
+                    if r > redMax {
+                        fmt.Println("not possible game")
+                        return 0
+                    }
                 }
-                fmt.Println(red+1000)
+            } else if strings.Contains(y, "green") == true {
+                temp := strings.TrimSuffix(y," green")
+                r, err := strconv.Atoi(temp)
+                if err == nil {
+                    if r > greenMax {
+                        fmt.Println("not possible game")
+                        return 0
+                    }
+                }
+            } else if strings.Contains(y, "blue") == true {
+                temp := strings.TrimSuffix(y," blue")
+                r, err := strconv.Atoi(temp)
+                if err == nil {
+                    if r > blueMax {
+                        fmt.Println("not possible game")
+                        return 0
+                    }
+                }
             }
         }
     }
-    s := "123"
-    q, err := strconv.Atoi(s)
-    if err == nil {
-        fmt.Println(q+5)
-    }
+    return gameNumber
 }
