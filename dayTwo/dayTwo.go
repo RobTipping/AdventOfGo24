@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -10,28 +12,29 @@ var redMax = 12
 var greenMax = 13
 var blueMax = 14
 
-var testString = "Game 1: 3 blue, 4 red; 14 red, 2 green, 6 blue; 2 green"
-
-
 func main() {
-    fmt.Println("test world")
-    fmt.Println(validGame(testString))
-    //tempChar:= inputString[5]
+    sum := 0
+    dat, err := os.Open("testInput")
+    if err != nil {
+        panic(err)
+    }
+    defer dat.Close()
+    scanner := bufio.NewScanner(dat)
+    for scanner.Scan() {
+	sum += validGame(scanner.Text())
+    }
+    fmt.Println(sum)
 }
 
 func validGame(inputString string) int {
     firstSplit := strings.Split(inputString, ": ")
-    fmt.Println(firstSplit[0])
     gameNumber, err := strconv.Atoi(strings.TrimPrefix(firstSplit[0], "Game "))
-    if err == nil {
+    if err != nil {
         fmt.Println("there is no game")
         fmt.Println(gameNumber)
     }
-    secondSplit := strings.Split(firstSplit[1], "; ")
-    for _, x := range secondSplit {
-        fmt.Println(x)
+    for _, x := range strings.Split(firstSplit[1], "; ") {
         for _, y := range strings.Split(x, ", ") {
-            fmt.Println(y)
             if strings.Contains(y, "red") == true {
                 temp := strings.TrimSuffix(y," red")
                 r, err := strconv.Atoi(temp)
