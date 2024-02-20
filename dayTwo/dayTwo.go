@@ -14,7 +14,7 @@ var blueMax = 14
 
 func main() {
     sum := 0
-    dat, err := os.Open("testInput")
+    dat, err := os.Open("mainInput")
     if err != nil {
         panic(err)
     }
@@ -32,6 +32,7 @@ func validGame(inputString string) int {
     if err != nil {
         fmt.Println("there is no game")
         fmt.Println(gameNumber)
+        return 0
     }
     for _, x := range strings.Split(firstSplit[1], "; ") {
         for _, y := range strings.Split(x, ", ") {
