@@ -4,13 +4,15 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"unicode"
 )
 
-var testString1 = ""
-var testString2 = "467..114.."
+var topString = ""
+var middleString = ""
+var bottomString = ""
 
 func main() {
-    sum := 0
+    //sum := 0
     dat, err := os.Open("testInput")
     if err != nil {
         panic(err)
@@ -18,14 +20,72 @@ func main() {
     defer dat.Close()
     scanner := bufio.NewScanner(dat)
     for scanner.Scan() {
-
+	isValidPartNumber(scanner.Text())	
     }
-    fmt.Println(sum)
+    isValidPartNumber("")
+    //fmt.Println(sum)
+}
 
-
-
-    fmt.Println("test to the world")
-    if testString1 == "" {
-        fmt.Println("blank string")
+func isValidPartNumber(newString string) int {
+    bottomString = newString
+    tempstring := ""
+    check := false
+    if middleString != "" {
+	for i, c := range middleString {
+	    if unicode.IsDigit(c) == true {
+		tempstring += string(c)
+		if check == false {
+		    check = nextToSymbol(i)
+		}
+	    } else {
+		if check == true {
+		    fmt.Println("has a number above", tempstring)
+		    check = false
+		    // add to sum
+		}
+		//fmt.Println(tempstring)
+		tempstring = ""
+		check = false
+	    }
+	}
     }
+    topString = middleString
+    middleString = bottomString
+    return 0
+}
+
+func nextToSymbol(pos int) bool {
+    topLength := len(topString)
+    //middleLength := len(middleString)
+    //bottomLength := len(bottomString)
+
+    if pos < topLength && pos < 0{
+	if checkSymbol(rune(topString[pos-1])) == true {
+	    return true;
+	}
+    }
+    if pos + 1 < topLength {
+	// check middle
+	if checkSymbol(rune(topString[pos])) == true {
+	    return true;
+	}
+    }
+    if pos + 2 < topLength {
+	// check top right
+	if checkSymbol(rune(topString[pos+1])) == true {
+	    return true;
+	}
+    }
+
+    return false
+}
+
+func checkSymbol(character rune) bool {
+    fmt.Println("is testing the rune: ", string(character))
+    if unicode.IsDigit(character) == false && string(character) != "." {
+	fmt.Println("is a symbol: ", string(character))
+	return true
+    }
+
+    return false
 }
