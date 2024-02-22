@@ -56,9 +56,10 @@ func isValidPartNumber(newString string) int {
 
 func nextToSymbol(pos int) bool {
     topLength := len(topString)
-    //middleLength := len(middleString)
-    //bottomLength := len(bottomString)
+    middleLength := len(middleString)
+    bottomLength := len(bottomString)
 
+    // check top row
     if pos < topLength && pos < 0{
 	if checkSymbol(rune(topString[pos-1])) == true {
 	    return true;
@@ -77,13 +78,45 @@ func nextToSymbol(pos int) bool {
 	}
     }
 
+    // check middle row
+    if pos < middleLength && pos < 0{
+	if checkSymbol(rune(middleString[pos-1])) == true {
+	    return true;
+	}
+    }
+    if pos + 2 < middleLength {
+	// check top right
+	if checkSymbol(rune(middleString[pos+1])) == true {
+	    return true;
+	}
+    }
+
+    // check bottom row
+    if pos < bottomLength && pos < 0{
+	if checkSymbol(rune(bottomString[pos-1])) == true {
+	    return true;
+	}
+    }
+    if pos + 1 < bottomLength {
+	// check middle
+	if checkSymbol(rune(bottomString[pos])) == true {
+	    return true;
+	}
+    }
+    if pos + 2 < bottomLength {
+	// check top right
+	if checkSymbol(rune(bottomString[pos+1])) == true {
+	    return true;
+	}
+    }
+
     return false
 }
 
 func checkSymbol(character rune) bool {
-    fmt.Println("is testing the rune: ", string(character))
+    //fmt.Println("is testing the rune: ", string(character))
     if unicode.IsDigit(character) == false && string(character) != "." {
-	fmt.Println("is a symbol: ", string(character))
+	//fmt.Println("is a symbol: ", string(character))
 	return true
     }
 
