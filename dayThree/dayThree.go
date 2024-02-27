@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"unicode"
 )
 
@@ -12,24 +13,25 @@ var middleString = ""
 var bottomString = ""
 
 func main() {
-    //sum := 0
-    dat, err := os.Open("testInput")
+    sum := 0
+    dat, err := os.Open("input")
     if err != nil {
         panic(err)
     }
     defer dat.Close()
     scanner := bufio.NewScanner(dat)
     for scanner.Scan() {
-	isValidPartNumber(scanner.Text())	
+	sum += isValidPartNumber(scanner.Text())	
     }
-    isValidPartNumber("")
-    //fmt.Println(sum)
+    sum += isValidPartNumber("")
+    fmt.Println(sum)
 }
 
 func isValidPartNumber(newString string) int {
     bottomString = newString
     tempstring := ""
     check := false
+    sum := 0
     if middleString != "" {
 	for i, c := range middleString {
 	    if unicode.IsDigit(c) == true {
@@ -39,9 +41,14 @@ func isValidPartNumber(newString string) int {
 		}
 	    } else {
 		if check == true {
-		    fmt.Println("has a number above", tempstring)
+		    fmt.Println("has a symbol above", tempstring)
 		    check = false
-		    // add to sum
+		    temp, err := strconv.Atoi(tempstring)
+		    if err == nil {
+			sum += temp
+		    }
+		} else {
+		    //fmt.Println("does not have a symbol", tempstring)
 		}
 		//fmt.Println(tempstring)
 		tempstring = ""
@@ -51,16 +58,18 @@ func isValidPartNumber(newString string) int {
     }
     topString = middleString
     middleString = bottomString
-    return 0
+    println(sum)
+    return sum
 }
 
 func nextToSymbol(pos int) bool {
     topLength := len(topString)
     middleLength := len(middleString)
     bottomLength := len(bottomString)
+    
 
     // check top row
-    if pos < topLength && pos < 0{
+    if pos < topLength && pos > 0{
 	if checkSymbol(rune(topString[pos-1])) == true {
 	    return true;
 	}
@@ -79,7 +88,7 @@ func nextToSymbol(pos int) bool {
     }
 
     // check middle row
-    if pos < middleLength && pos < 0{
+    if pos < middleLength && pos > 0{
 	if checkSymbol(rune(middleString[pos-1])) == true {
 	    return true;
 	}
@@ -91,8 +100,12 @@ func nextToSymbol(pos int) bool {
 	}
     }
 
+	//fmt.Println("checking the bottom")
+    //fmt.Println("the bottom length is", bottomLength)
+    //fmt.Println("pos is", pos)
     // check bottom row
-    if pos < bottomLength && pos < 0{
+    if pos < bottomLength && pos > 0{
+	//fmt.Println("checking the bottom")
 	if checkSymbol(rune(bottomString[pos-1])) == true {
 	    return true;
 	}
@@ -115,6 +128,7 @@ func nextToSymbol(pos int) bool {
 
 func checkSymbol(character rune) bool {
     //fmt.Println("is testing the rune: ", string(character))
+    //fmt.Println(string(character))
     if unicode.IsDigit(character) == false && string(character) != "." {
 	//fmt.Println("is a symbol: ", string(character))
 	return true
